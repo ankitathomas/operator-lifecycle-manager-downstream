@@ -24,6 +24,8 @@ for repo in $(cat tracked); do
 		ref=$(git show-ref remotes/$dir/master -s)
 		git subtree add --prefix="$dir/" "$dir" --squash master || exit_on_error "failed to add subtree" $?
 		echo "$ref" > $dir.UPSTREAM_VERSION
+		git add $dir.UPSTREAM_VERSION
+		git commit -m "bump upstream version"
 		echo "Added new subtree $repo"
 	fi
 done
