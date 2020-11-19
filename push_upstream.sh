@@ -38,4 +38,3 @@ echo git push "$remote" "$localrev":"$newbranch"
 git push "$remote" "$localrev":"refs/heads/$newbranch" || exit_on_error "push failed"
 
 echo "pushed to remote branch $newbranch"
-
