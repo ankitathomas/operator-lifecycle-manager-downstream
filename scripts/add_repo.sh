@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source ./utils.sh
-
+ 
 for repo in $(cat tracked); do
 	dir=$(echo "$repo" | sed 's!.*/\(.*\)!\1!')
 	git_repo_url="git@github.com:$repo.git"
