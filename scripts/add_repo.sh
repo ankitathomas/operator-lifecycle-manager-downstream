@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source ./utils.sh
- 
+
 for repo in $(cat tracked); do
 	dir=$(echo "$repo" | sed 's!.*/\(.*\)!\1!')
 	git_repo_url="git@github.com:$repo.git"
@@ -25,7 +25,7 @@ for repo in $(cat tracked); do
 		git subtree add --prefix="$dir/" "$dir" --squash master || exit_on_error "failed to add subtree" $?
 		echo "$ref" > $dir.UPSTREAM_VERSION
 		git add $dir.UPSTREAM_VERSION
-		git commit -m "bump upstream version"
+		git commit -m "tracking new subtree $dir"
 		echo "Added new subtree $repo"
 	fi
 done
