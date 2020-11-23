@@ -20,7 +20,7 @@ remote_url=$1
 remote_name=$(echo $remote_url | sed 's!.*/\([^\/]*\)!\1!' | sed 's/.git$//')
 remote_dir="$staging_dir/$remote_name"
 update_tracked=false
-updated=false
+add_subtree=false
 
 if [ "|$remote_name|" == "||" ]; then
 	exit_on_error "cannot get repository name from $remote_url"
@@ -52,8 +52,7 @@ if [ ! -d "$remote_dir" ]; then
 	ref=$(git show-ref remotes/$remote_name/master -s)
 	git subtree add --prefix="$remote_dir" "$remote_name" --squash master
 	echo "Added new subtree $remote_dir"
-	git commit -m "tracking new subtree $remote_dir"
-	updated=true
+	add_subtree=true
 else
 	echo "$remote_dir already exists"
 fi
@@ -66,10 +65,10 @@ if $update_tracked ; then
 	else
 		git commit -m "update tracked remotes for $remote_name"
 	fi
-	updated=true
+	add_subtree=true
 fi
 
-if $updated ; then
+if $add_subtree ; then
 	# push to subtree dir
 	FORK_REMOTE=${FORK_REMOTE:-origin}
 	git push ${FORK_REMOTE} ${temp_branch}
