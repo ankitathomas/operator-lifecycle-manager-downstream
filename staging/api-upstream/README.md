@@ -18,3 +18,5 @@ You can install the `operator-verify` tool from source using:
 To verify your ClusterServiceVersion yaml,
 
 `$ operator-verify verify /path/to/filename.yaml`
+
+updated
