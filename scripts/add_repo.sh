@@ -71,9 +71,9 @@ fi
 if $add_subtree ; then
 	# push to subtree dir
 	FORK_REMOTE=${FORK_REMOTE:-origin}
-	git push ${FORK_REMOTE} ${temp_branch}
-	
-	echo "Pushed changes to ${FORK_REMOTE} ${temp_branch}"
+	fork_branch="add_tracked_upstream_$remote_name"	
+	git push ${FORK_REMOTE} ${temp_branch}:$fork_branch
+	echo "Pushed changes to ${FORK_REMOTE} ${temp_branch}:$fork_branch"
 	echo "You can now create a PR for the update"
 else
 	echo "repository already present and tracked, nothing to do"
