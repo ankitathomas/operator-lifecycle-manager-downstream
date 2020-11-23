@@ -10,9 +10,11 @@ if [ $# -lt 2 ]; then
 	exit 0
 fi
 
-repodir=$1
-remote="$repodir"
+remote=$1
 ref=$2
+repodir=staging/$1
+
+git fetch -t $remote
 
 shortref=$(echo "$ref" | sed 's/.*\.\([^.]\{,6\}\)[^.]*/\1/')
 newbranch="$repodir-$shortref-$(date "+%s")"
