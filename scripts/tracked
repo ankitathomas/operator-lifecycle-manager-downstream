@@ -1,5 +1,4 @@
-ankitathomas/operator-lifecycle-manager-upstream
-ankitathomas/operator-registry-upstream
-ankitathomas/api-upstream
-https://github.com/ankitathomas/sbox.git
+operator-lifecycle-manager-upstream git@github.com:ankitathomas/operator-lifecycle-manager-upstream.git
+operator-registry-upstream git@github.com:ankitathomas/operator-registry-upstream.git
+api-upstream ankitathomas/api-upstream.git
 sbox https://github.com/ankitathomas/sbox.git
