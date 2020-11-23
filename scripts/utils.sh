@@ -72,4 +72,3 @@ if [ ! -d "${staging_dir}" ]; then
 	mkdir ${staging_dir}
 fi
 
-cleanup_and_reset_branch
