@@ -52,7 +52,7 @@ if [ ! -d "$remote_dir" ]; then
 	git remote update $remote_name
 	ref=$(git show-ref remotes/$remote_name/master -s)
 	git subtree add --prefix="$remote_dir" "$remote_name" --squash master
-	echo "Added new subtree $repo"
+	echo "Added new subtree $remote_dir"
 	git commit -m "tracking new subtree $remote_dir"
 	add_subtree=true
 else
