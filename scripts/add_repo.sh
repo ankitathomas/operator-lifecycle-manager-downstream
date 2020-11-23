@@ -2,8 +2,7 @@
 
 set -eu
 
-source ./utils.sh
-
+source "$(dirname $0)/utils.sh"
 
 case "$*" in
 	*" -h"*|"-h"|*" --help"*|"--help"|"")
@@ -49,7 +48,8 @@ if [ ! -d "$remote_dir" ]; then
 
 	git diff-index --quiet HEAD || exit_on_error "Git status not clean, aborting !!\\n\\n$(git status)" $?
 
-	# repo either newly created
+	# add the subtree
+	git remote update $remote_name
 	ref=$(git show-ref remotes/$remote_name/master -s)
 	git subtree add --prefix="$remote_dir" "$remote_name" --squash master
 	echo "Added new subtree $repo"

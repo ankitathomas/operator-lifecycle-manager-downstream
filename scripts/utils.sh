@@ -1,12 +1,15 @@
 #!/bin/bash
 
+current_branch=$(git symbolic-ref --short HEAD)
+repo_root=$(git rev-parse --show-toplevel)
+staging_dir="staging"
+repo_list="scripts/tracked"
+temp_branch="automated-sync-$(date +%s)"
+
 function cleanup_and_reset_branch {
 	if [ -n ${temp_branch} ]; then
 		git checkout -f "${current_branch}" >/dev/null 2>&1 || true
 		git branch -D "${temp_branch}" >/dev/null 2>&1 || true
-	fi
-	if [[ -n "${prtext}" ]]; then
-		rm "${prtext}"
 	fi
 }
 
@@ -41,8 +44,8 @@ if ! which git > /dev/null; then
   exit_on_error "Can't find git in PATH"
 fi
 
-git subtree &>/dev/null
-if [ $? -eq 1 ]; then
+git subtree &>/dev/null || subtree_exit_code=$? 
+if [ $subtree_exit_code -eq 1 ]; then
 	exit_on_error "installed git version does not support subtree command, please see https://github.com/git/git/tree/master/contrib/subtree"
 fi
 
@@ -52,12 +55,6 @@ if git_status=$(git status --porcelain --untracked=no 2>/dev/null) && [[ -n "${g
 fi
 
 trap 'exit_on_error "$0:" $?' ERR
-
-current_branch=$(git symbolic-ref --short HEAD)
-repo_root=$(git rev-parse --show-toplevel)
-staging_dir="staging"
-repo_list="scripts/tracked"
-temp_branch="automated-sync-$(date +%s)"
 
 cd ${repo_root}
 
@@ -74,3 +71,5 @@ fi
 if [ ! -d "${staging_dir}" ]; then
 	mkdir ${staging_dir}
 fi
+
+cleanup_and_reset_branch
