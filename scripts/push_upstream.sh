@@ -15,7 +15,6 @@ repodir=staging/$1
 
 git fetch -t $remote
 
-newbranch="$remote-downstream-cherry-pick-$(date "+%s")"
 localrev=$(git subtree split --prefix="$repodir") || exit_on_error "failed to create subtree branch"
 
 refs=" ${@:2:$#} "
@@ -57,7 +56,10 @@ for i in $(seq 0 $(( ${#refs} - 1 )) ); do
 	fi
 done
 
+newbranch="$remote-downstream-cherry-pick-$(date "+%s")"
 git checkout -b $newbranch $remote/master
+git branch -D $temp_branch
+temp_branch=$newbranch
 
 git cherry-pick $mapped_refs
 
@@ -65,7 +67,6 @@ git push $remote $newbranch:"refs/heads/$newbranch"
 
 echo "Pushed changes to $remote $newbranch"
 echo "You can now create a PR for the update"
-
 
 cleanup_and_reset_branch
 
