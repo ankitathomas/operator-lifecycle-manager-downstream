@@ -1,2 +1,3 @@
 operator-lifecycle-manager-upstream git@github.com:ankitathomas/operator-lifecycle-manager-upstream.git
 operator-registry-upstream git@github.com:ankitathomas/operator-registry-upstream.git
+api-upstream git@github.com:ankitathomas/api-upstream.git
