@@ -76,6 +76,8 @@ if $updated ; then
 	
 	echo "Pushed changes to ${FORK_REMOTE} ${temp_branch}"
 	echo "You can now create a PR for the update"
+else
+	echo "repository already present and tracked, nothing to do"
 fi
 
 cleanup_and_reset_branch
