@@ -51,6 +51,8 @@ if [ ! -d "$remote_dir" ]; then
 	git remote update $remote_name
 	ref=$(git show-ref remotes/$remote_name/master -s)
 	git subtree add --prefix="$remote_dir" "$remote_name" --squash master
+	sh -c "cd $remote_dir && go mod edit -replace $downstream_repo=../../"
+	git add $remote_dir/go.mod
 	echo "Added new subtree $remote_dir"
 	add_subtree=true
 else
@@ -70,15 +72,21 @@ fi
 
 if $add_subtree ; then
 	# push to subtree dir
+
 	FORK_REMOTE=${FORK_REMOTE:-origin}
-	fork_branch="add_tracked_upstream_$remote_name"	
-	git push ${FORK_REMOTE} ${temp_branch}:"refs/heads/$fork_branch"
-	echo "Pushed changes to ${FORK_REMOTE} ${temp_branch}:$fork_branch"
-	echo "You can now create a PR for the update"
+#	fork_branch="add_tracked_upstream_$remote_name"	
+#	git push ${FORK_REMOTE} ${temp_branch}:"refs/heads/$fork_branch"
+#	echo "Pushed changes to ${FORK_REMOTE} ${temp_branch}:$fork_branch"
+#	echo "You can now create a PR for the update"
+	echo "!!! Added a new subrepo, you can now make any needed updates to the build files and Makefile"
+	echo ""
+	git diff --dirstat ${current_branch}..${temp_branch}
+	echo "!!! Once the changes look good, run:"
+	echo " $ git push ${FORK_REMOTE} ${temp_branch}"
 else
 	echo "repository already present and tracked, nothing to do"
 fi
 
-cleanup_and_reset_branch
+#cleanup_and_reset_branch
 
 exit 0
