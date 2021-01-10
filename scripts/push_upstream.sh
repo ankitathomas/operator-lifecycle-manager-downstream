@@ -63,11 +63,21 @@ temp_branch=$newbranch
 
 git cherry-pick $mapped_refs
 
-git push $remote $newbranch:"refs/heads/$newbranch"
+sh -c "cd $repodir && \
+	go mod edit -dropreplace $downstream_repo"
+git add $repodir/go.mod
+git commit --amend --no-edit
 
-echo "Pushed changes to $remote $newbranch"
-echo "You can now create a PR for the update"
+#git push $remote $newbranch:"refs/heads/$newbranch"
 
-cleanup_and_reset_branch
+echo "** Ready to push changes!"
+echo ""
+git diff --dirstat $remote/master..$temp_branch
+echo "** Once the updates have been verified, you can push using"
+echo "$ git push $remote $newbranch"
+echo ""
+echo "The original downstream repo is present at the branch ${current_branch}"
+
+#cleanup_and_reset_branch
 
 exit 0

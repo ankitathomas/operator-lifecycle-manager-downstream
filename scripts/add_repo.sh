@@ -34,6 +34,7 @@ if [ $(grep "$remote_name " $repo_list | sed 's/.* \(.*\)/\1/' | wc -c) -gt 0 ];
 		remote_url=$tracked_url
 	fi
 else
+	# update list of tracked repositories later, branch needs to be clean to stage the subtree
 	update_tracked=true
 fi
 
@@ -53,6 +54,7 @@ if [ ! -d "$remote_dir" ]; then
 	git subtree add --prefix="$remote_dir" "$remote_name" --squash master
 	sh -c "cd $remote_dir && go mod edit -replace $downstream_repo=../../"
 	git add $remote_dir/go.mod
+	git commit --amend --no-edit
 	echo "Added new subtree $remote_dir"
 	add_subtree=true
 else
@@ -81,10 +83,14 @@ if $add_subtree ; then
 	echo "!!! Added a new subrepo, you can now make any needed updates to the build files and Makefile"
 	echo ""
 	git diff --dirstat ${current_branch}..${temp_branch}
-	echo "!!! Once the changes look good, run:"
+	echo "!!! To cherry-pick the changes to your original branch, run:"
+	echo "$ git checkout ${current_branch} && git cherry-pick -m 2 "'$('"git merge-base ${current_branch} ${temp_branch})..${temp_branch}"
+	echo ""
+	echo "!!! Once the changes look good, you can push the changes to the remote repository with:"
 	echo " $ git push ${FORK_REMOTE} ${temp_branch}"
 else
 	echo "repository already present and tracked, nothing to do"
+	cleanup_and_reset_branch
 fi
 
 #cleanup_and_reset_branch

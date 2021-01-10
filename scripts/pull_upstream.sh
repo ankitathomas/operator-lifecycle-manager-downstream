@@ -18,7 +18,22 @@ while read -r line; do
 	git branch -D $split_branch || true
 done <$repo_list
 
+for f in $(ls $staging_dir); do
+	sh -c "cd $staging_dir/$f \
+		&& go mod edit -replace $downstream_repo=../../ "
+	git add $staging_dir/$f/go.mod
+done
+
+git commit --amend --no-edit
+
 printf "\\n** Upstream merge complete! **\\n"
+echo "** You can now inspect the branch. **"
+echo ""
+git diff --dirstat ${current_branch}..${temp_branch}
+echo "** Push the changes to remote with **"
+echo ""
 echo "$ git checkout $temp_branch"
-echo "$ git push origin $temp_branch:master"
+echo "$ git push origin $temp_branch:<BRANCH>"
+# echo "$ git checkout $temp_branch"
+# echo "$ git push origin $temp_branch:master"
 

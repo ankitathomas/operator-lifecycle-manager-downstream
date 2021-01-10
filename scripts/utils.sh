@@ -5,6 +5,7 @@ repo_root=$(git rev-parse --show-toplevel)
 staging_dir="staging"
 repo_list="scripts/tracked"
 temp_branch="automated-sync-$(date +%s)"
+downstream_repo="github.com/openshift/operator-lifecycle-manager"
 
 function cleanup_and_reset_branch {
 	if [ -n ${temp_branch} ]; then
@@ -35,10 +36,10 @@ function exit_on_error {
         exit ${code}
 }
 
-
-if [[ -z ${GITHUB_USER:-} ]]; then
-  exit_on_error "Please export GITHUB_USER=<your-user> (or GH organization, if that's where your fork lives)"
-fi
+## required for creating automated PRs with hub
+#if [[ -z ${GITHUB_USER:-} ]]; then
+#  exit_on_error "Please export GITHUB_USER=<your-user> (or GH organization, if that's where your fork lives)"
+#fi
 
 if ! which git > /dev/null; then
   exit_on_error "Can't find git in PATH"
