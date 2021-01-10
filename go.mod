@@ -17,3 +17,5 @@ require (
 	sigs.k8s.io/controller-runtime v0.7.0
 	sigs.k8s.io/controller-tools v0.4.1
 )
+
+replace github.com/openshift/operator-lifecycle-manager => ../../
