@@ -18,4 +18,4 @@ require (
 	sigs.k8s.io/controller-tools v0.4.1
 )
 
-replace github.com/openshift/operator-lifecycle-manager => ../../
+replace github.com/openshift/operator-framework-olm => ../../

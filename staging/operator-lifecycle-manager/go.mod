@@ -73,7 +73,7 @@ replace (
 	sigs.k8s.io/structured-merge-diff => sigs.k8s.io/structured-merge-diff v1.0.1-0.20191108220359-b1b620dd3f06
 )
 
-replace github.com/openshift/operator-lifecycle-manager => ../../
+replace github.com/openshift/operator-framework-olm => ../../
 
 replace github.com/operator-framework/api => ../../staging/api/
 

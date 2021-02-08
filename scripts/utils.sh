@@ -5,7 +5,7 @@ repo_root=$(git rev-parse --show-toplevel)
 staging_dir="staging"
 repo_list="scripts/tracked"
 temp_branch="automated-sync-$(date +%s)"
-downstream_repo="github.com/openshift/operator-lifecycle-manager"
+downstream_repo="github.com/openshift/operator-framework-olm"
 
 function cleanup_and_reset_branch {
 	if [ -n ${temp_branch} ]; then
