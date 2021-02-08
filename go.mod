@@ -72,6 +72,6 @@ replace (
 	github.com/docker/distribution => github.com/docker/distribution v0.0.0-20191216044856-a8371794149d
 )
 
-replace github.com/openshift/operator-lifecycle-manager => ../../
+replace github.com/openshift/operator-framework-olm => ../../
 
 replace github.com/operator-framework/api => ../../staging/api/
