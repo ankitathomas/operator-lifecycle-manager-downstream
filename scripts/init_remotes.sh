@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 case "$*" in
 	*" -h"*|"-h"|*" --help"*|"--help")
