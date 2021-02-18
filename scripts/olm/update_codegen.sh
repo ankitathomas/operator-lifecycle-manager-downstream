@@ -18,7 +18,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/../..
 CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}
 
 # create a temporary directory to generate code in and ensure we clean it up on exit
@@ -51,7 +51,7 @@ bash "${CODEGEN_PKG}/generate-internal-groups.sh" all \
   --go-header-file "${SCRIPT_ROOT}/boilerplate.go.txt"
 
 # correct import paths
-find "${OUTPUT_BASE}" -o -type f -print0 | xargs -0 sed -i 's/'"${STAGING_DIR}"'/'"${ORG}"'/g'
+find "${OUTPUT_BASE}" -type f -print0 | xargs -0 sed -i 's!'"${STAGING_DIR}"'!'"${ORG}"'!'
 
 # copy the generated resources
 cp -R "${OUTPUT_BASE}/${MODULE}/." "${SCRIPT_ROOT}"

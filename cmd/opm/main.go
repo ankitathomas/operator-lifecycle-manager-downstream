@@ -7,10 +7,10 @@ import (
 	"github.com/spf13/cobra"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 
+	"github.com/openshift/operator-framework-olm/pkg/version"
 	"github.com/operator-framework/operator-registry/cmd/opm/alpha"
 	"github.com/operator-framework/operator-registry/cmd/opm/index"
 	"github.com/operator-framework/operator-registry/cmd/opm/registry"
-	"github.com/openshift/operator-framework-olm/pkg/version"
 	registrylib "github.com/operator-framework/operator-registry/pkg/registry"
 )
 

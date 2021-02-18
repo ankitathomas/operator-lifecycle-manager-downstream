@@ -8,17 +8,17 @@ import (
 )
 
 var (
-        // OLMVersion indicates what version of OLM the binary belongs to
+	// OLMVersion indicates what version of OLM the binary belongs to
 	OLMVersion string
 
-        // GitCommit indicates which git commit the binary was built from
+	// GitCommit indicates which git commit the binary was built from
 	GitCommit string
 	// buildDate in ISO8601 format, output of $(date -u +'%Y-%m-%dT%H:%M:%SZ')
 	buildDate string
 )
 
 type Version struct {
-	OLMVersion string `json:"opmVersion"`
+	OPMVersion string `json:"opmVersion"`
 	GitCommit  string `json:"gitCommit"`
 	BuildDate  string `json:"buildDate"`
 	GoOs       string `json:"goOs"`
@@ -37,7 +37,7 @@ func Full() string {
 
 func getVersion() Version {
 	return Version{
-		OLMVersion: OLMVersion,
+		OPMVersion: OLMVersion,
 		GitCommit:  GitCommit,
 		BuildDate:  buildDate,
 		GoOs:       runtime.GOOS,

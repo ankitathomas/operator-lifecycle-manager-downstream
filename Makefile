@@ -45,7 +45,10 @@ endif
 .PHONY: all
 all: clean test build
 
-bin/operator-verify: ## Build & install operator-verify
+help: ## Display this help.
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
+bin/operator-verify:
 	$(GO) build \
 		-gcflags "all=-trimpath=${GOPATH}" \
 		-asmflags "all=-trimpath=${GOPATH}" \
@@ -53,13 +56,13 @@ bin/operator-verify: ## Build & install operator-verify
 			-X '${PKG}/version.GitVersion=${OLM_VERSION}' \
 			-X '${PKG}/version.GitCommit=${GIT_COMMIT}' \
 		" \
-		-o "bin/operator-verify"
+		-o "bin/operator-verify" \
 		"$(PKG)/cmd/operator-verify"
 
 $(REGISTRY_CMDS):
 	$(arch_flags) $(GO) build $(extra_flags) $(TAGS) -o bin/$(shell basename $@) ./cmd/$(notdir $@)
 
-$(CMDS): version_flags=-ldflags "-X '$(PKG)/pkg/version.GitCommit=$(GIT_COMMIT)' -X '$(PKG)/pkg/version.OLMVersion=`$(OLM_VERSION)' -X '$(PKG)/pkg/version.buildDate=$(BUILD_DATE)'"
+$(CMDS): version_flags=-ldflags "-X '$(PKG)/pkg/version.GitCommit=$(GIT_COMMIT)' -X '$(PKG)/pkg/version.OLMVersion=$(OLM_VERSION)' -X '$(PKG)/pkg/version.buildDate=$(BUILD_DATE)'"
 $(CMDS):
 	$(arch_flags) $(GO) build $(version_flags) $(extra_flags) $(TAGS) -o bin/$(shell basename $@) $@
 
@@ -67,12 +70,12 @@ $(TCMDS):
 	$(GO) test -c $(BUILD_TAGS) -o bin/$(shell basename $@) $@
 
 
-.PHONY: build
+.PHONY: build ## Build binaries
 build: clean $(REGISTRY_CMDS) $(CMDS) bin/operator-verify
 
 .PHONY: cross
-cross: version_flags=-ldflags "-X '$(PKG)/pkg/version.GitCommit=$(GIT_COMMIT)' -X '$(PKG)/pkg/version.OLMVersion=`$(OLM_VERSION)' -X '$(PKG)/pkg/version.buildDate=$(BUILD_DATE)'"
-cross:
+cross: version_flags=-ldflags "-X '$(PKG)/pkg/version.GitCommit=$(GIT_COMMIT)' -X '$(PKG)/pkg/version.OLMVersion=$(OLM_VERSION)' -X '$(PKG)/pkg/version.buildDate=$(BUILD_DATE)'"
+cross: ## Cross-compile opm binary
 ifeq ($(shell $(GO) env GOARCH),amd64)
 	GOOS=darwin CC=o64-clang CXX=o64-clang++ CGO_ENABLED=1 $(GO) build $(version_flags) $(TAGS) -o "bin/darwin-amd64-opm" --ldflags "-extld=o64-clang" ./cmd/opm
 	GOOS=windows CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CGO_ENABLED=1 $(GO) build $(version_flags) $(TAGS)  -o "bin/windows-amd64-opm" --ldflags "-extld=x86_64-w64-mingw32-gcc" ./cmd/opm
@@ -82,8 +85,8 @@ endif
 static: extra_flags=-ldflags '-w -extldflags "-static"'
 static: build
 
-.PHONY: image
-image:
+.PHONY: registry-image
+registry-image:
 	docker build -f operator-registry.Dockerfile .
 
 # Code management.
@@ -116,7 +119,7 @@ generate-fakes: ## Generate deepcopy, conversion, clients, listers, and informer
 	./scripts/olm/generate_fakes.sh
 
 
-codegen: ## Clients, listers, and informers
+codegen: ## Generate clients, listers, and informers
 	./scripts/olm/update_codegen.sh
 
 mockgen: ## Generate mock types.
@@ -124,15 +127,15 @@ mockgen: ## Generate mock types.
 
 gen-all: manifests generate-fakes gen-grpc codegen mockgen ## Generate everything.
 
-.PHONY: gen-grpc # Generate GRPC
-gen-grpc:
+.PHONY: gen-grpc
+gen-grpc: ## Generate GRPC APIs for registry
 	protoc -I $(registry_api) --go_out=$(registry_api) $(registry_api)/*.proto
 	protoc -I $(registry_api) --go-grpc_out=$(registry_api) $(registry_api)/*.proto
 	protoc -I $(registry_api)/grpc_health_v1 --go_out=$(registry_api)/grpc_health_v1 $(registry_api)/grpc_health_v1/*.proto
 	protoc -I $(registry_api)/grpc_health_v1 --go-grpc_out=$(registry_api)/grpc_health_v1 $(registry_api)/grpc_health_v1/*.proto
 
-.PHONY: container-codegen
-container-codegen:
+.PHONY: container-gen-grpc
+container-gen-grpc:
 	docker build -t operator-registry:codegen -f codegen.Dockerfile .
 	docker run --name temp-codegen operator-registry:codegen /bin/true
 	docker cp temp-codegen:/codegen/pkg/api/. $(registry_api)
@@ -149,9 +152,9 @@ verify: verify-codegen verify-mockgen verify-manifests
 # Static tests.
 .PHONY: test unit e2e
 
-test: unit cover.out## Runs the tests
+test: unit cover.out ## Run unit tests
 
-unit: kubebuilder ## Run the unit tests
+unit: kubebuilder
 	KUBEBUILDER_ASSETS=$(KUBEBUILDER_ASSETS) $(GO) test $(SPECIFIC_UNIT_TEST) $(TAGS) $(TEST_RACE) -count=1 -v ./...
 
 cover.out: 
@@ -172,7 +175,7 @@ endif
 
 .PHONY: e2e
 
-e2e: ## Run e2e tests
+e2e:
 	$(GO) test -v -failfast -timeout 150m ./test/e2e/... -namespace=openshift-operators -kubeconfig=${KUBECONFIG} -olmNamespace=openshift-operator-lifecycle-manager -dummyImage=bitnami/nginx:latest -ginkgo.flakeAttempts=3
 
 e2e-operator-metrics:
@@ -220,14 +223,14 @@ test-bin: clean $(TCMDS)
 LOCAL_NAMESPACE := "olm"
 
 .PHONY: run-console-local
-run-console-local:
+run-console-local: ## Run Openshift console locally
 	@echo Running script to run the OLM console locally:
 	. ./scripts/olm/run_console_local.sh
 
-.PHONY: run-local
+.PHONY: run-local ## Build and run OLM locally
 run-local: build-linux build-wait build-util-linux build-local deploy-local
 
-build-local:
+build-local: 
 	rm -rf build
 	. ./scripts/olm/build_local.sh
 	
@@ -243,7 +246,7 @@ clean-e2e:
 	kubectl delete apiservices.apiregistration.k8s.io v1.packages.operators.coreos.com || true
 	kubectl delete -f test/e2e/resources/0000_50_olm_00-namespace.yaml
 
-e2e-local: build-linux build-wait build-util-linux build-local
+e2e-local: build-linux build-wait build-util-linux build-local ## Run e2e tests locally
 	. ./scripts/olm/run_e2e_local.sh $(TEST)
 
 e2e-local-docker:

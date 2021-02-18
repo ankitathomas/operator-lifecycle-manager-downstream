@@ -25,8 +25,6 @@ const (
 	OperatorKind = "Operator"
 	// OperatorGroupKind is the kind name for OperatorGroup resources.
 	OperatorGroupKind = "OperatorGroup"
-	// OperatorDummyKind is the kind name for OperatorDummy resources.
-	OperatorDummyKind = "OperatorDummy"
 )
 
 // SchemeGroupVersion is group version used to register these objects

@@ -979,7 +979,6 @@ func buildInstallPlanCleanupFunc(crc versioned.Interface, namespace string, inst
 	}
 }
 
-
 func buildInstallPlanPhaseCheckFunc(phases ...v1alpha1.InstallPlanPhase) checkInstallPlanFunc {
 	return func(fip *v1alpha1.InstallPlan) bool {
 		ctx.Ctx().Logf("installplan is %s", fip.Status.Phase)
@@ -990,7 +989,6 @@ func buildInstallPlanPhaseCheckFunc(phases ...v1alpha1.InstallPlanPhase) checkIn
 		return satisfiesAny
 	}
 }
-
 
 // do not return an error if the installplan has not been created yet
 func waitForInstallPlan(c versioned.Interface, name string, namespace string, checkPhase checkInstallPlanFunc) (*v1alpha1.InstallPlan, error) {
@@ -1007,4 +1005,3 @@ func waitForInstallPlan(c versioned.Interface, name string, namespace string, ch
 	})
 	return fetchedInstallPlan, err
 }
-
