@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 if [ $# -lt 1 ]; then
 	echo "Pull from specified upstream staged repository. Syncs with upstream master if branch isn't specified."
