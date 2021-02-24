@@ -1,6 +1,6 @@
 module github.com/operator-framework/operator-registry
 
-go 1.13
+go 1.15
 
 require (
 	github.com/Microsoft/hcsshim v0.8.9 // indirect
@@ -55,7 +55,6 @@ require (
 	k8s.io/api v0.20.0
 	k8s.io/apiextensions-apiserver v0.20.0
 	k8s.io/apimachinery v0.20.0
-	k8s.io/apiserver v0.20.0
 	k8s.io/client-go v0.20.0
 	k8s.io/klog v1.0.0
 	k8s.io/kubectl v0.20.0
@@ -71,5 +70,3 @@ replace (
 	// latest tag resolves to a very old version. this is only used for spinning up local test registries
 	github.com/docker/distribution => github.com/docker/distribution v0.0.0-20191216044856-a8371794149d
 )
-
-replace github.com/openshift/operator-framework-olm => ../../
