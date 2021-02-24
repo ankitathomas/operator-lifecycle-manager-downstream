@@ -21,12 +21,13 @@ import (
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/feature"
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/lib/filemonitor"
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/lib/operatorclient"
+	versionedstatus "github.com/openshift/operator-framework-olm/pkg/lib/operatorstatus"
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/lib/operatorstatus"
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/lib/profile"
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/lib/queueinformer"
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/lib/signals"
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/metrics"
-	olmversion "github.com/operator-framework/operator-lifecycle-manager/pkg/version"
+	olmversion "github.com/openshift/operator-framework-olm/pkg/version"
 )
 
 const (
@@ -214,7 +215,7 @@ func main() {
 	<-op.Ready()
 
 	if *writeStatusName != "" {
-		operatorstatus.MonitorClusterStatus(*writeStatusName, op.AtLevel(), ctx.Done(), opClient, configClient, crClient)
+		versionedstatus.MonitorClusterStatus(*writeStatusName, op.AtLevel(), ctx.Done(), opClient, configClient, crClient)
 	}
 
 	if *writePackageServerStatusName != "" {
